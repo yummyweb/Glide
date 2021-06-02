@@ -37,13 +37,19 @@ class Api:
         """
         return {"Authorization": "Bearer " + self.getAccessToken(), "content-type": "application/json"}
     
-    def getAllFilePathsForDirectory(self, dir):
+    def getAllFilePathsForDirectory(self, dir: str):
+        """
+        Returns all file paths from given directory
+        """
         paths = []
         for root, dirs, filenames in os.walk(dir, topdown=False):
             paths += ((os.path.join(root, name)) for name in filenames)
         return paths
 
-    def getShasum(self, paths, directory) -> dict:
+    def getShasum(self, paths: list, directory: str) -> dict:
+        """
+        Calculates SHA1 sum for file
+        """
         BUF_SIZE = 65536
         hashes = {}
         for path in paths:

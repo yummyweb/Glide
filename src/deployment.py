@@ -1,15 +1,11 @@
 from src.api import Api
-import requests
 
 class Deployment:
-    def __init__(self, deploymentName, cloudName):
+    def __init__(self, deploymentName, cloudName, directoryToDeploy):
         self.deploymentName = deploymentName
         self.cloudName = cloudName
+        self.directoryToDeploy = directoryToDeploy
     
     def deployToNetlify(self):
         api = Api(self.deploymentName)
-        if self.cloudName == "netlify":
-            accessToken = api.getAccessToken()
-            print(accessToken)
-
-deployment =Deployment('hi', 'netlify')
+        api.uploadFile(self.directoryToDeploy)

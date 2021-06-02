@@ -1,5 +1,6 @@
 import click
 import glob
+import json
 from tabulate import tabulate
 from src.api import Api
 from src.deployment import Deployment
@@ -16,10 +17,10 @@ def init(project_name):
         "client_id": "",
         "client_secret": "",
         "access_token": ""
-    } 
+    }
 
-    with open(project_name + '.glide', 'w') as fp:
-        fp.write(str(template))
+    with open(project_name + '.glide.json', 'w') as fp:
+        fp.write(json.dumps(template, indent=4))
 
 @click.command()
 @click.argument('directory')

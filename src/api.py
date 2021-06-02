@@ -1,4 +1,3 @@
-import ast
 import hashlib
 import requests
 import os
@@ -19,7 +18,7 @@ class Api:
         except:
             raise ConfigFileException("File not found.")
 
-        return ast.literal_eval(f.read())
+        return eval(f.read())
 
     def getClientIdAndClientSecret(self) -> tuple:
         """
@@ -107,7 +106,7 @@ class Api:
                     print('\033[91m' + "ERROR:" + '\033[0m' + " Unable to upload file")
                     print(r.content)
     
-    def getSites(self) -> dict:
+    def getSites(self) -> list:
         json_headers = self.getHeaders()
         r = requests.get(self.netlifyBaseUrl + '/sites', headers=json_headers)
         return r.json()

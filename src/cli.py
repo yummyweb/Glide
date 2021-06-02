@@ -7,7 +7,11 @@ def init(project_name):
     Creates a basic glide config file.
     """
     template = {
-        "project_name": project_name
+        "project_name": project_name,
+        "cloud_name": "",
+        "client_id": "",
+        "client_secret": "",
+        "access_token": ""
     } 
 
     with open(project_name + '.glide', 'w') as fp:

@@ -4,7 +4,6 @@ import click
 @click.argument('project_name')
 def init(project_name):
     """
-    init:
     Creates a basic glide config file.
     """
     template = """{

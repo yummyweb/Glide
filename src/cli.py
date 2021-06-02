@@ -29,8 +29,9 @@ def deploy(directory):
     """
     for file in glob.glob("*.glide"):
         with open(file, 'rb') as f:
-            deployment = Deployment(file.replace('.glide', ''), eval(f.read())['cloud_name'], directory)
-            deployment.deployToNetlify()
+            deployment = Deployment(file.replace('.glide', ''), directory)
+            if eval(f.read())['cloud_name'] == "netlify":
+                deployment.deployToNetlify()
 
 @click.command()
 def sites():

@@ -1,9 +1,8 @@
 from src.api import Api
 
 class Deployment:
-    def __init__(self, deploymentName, cloudName, directoryToDeploy):
+    def __init__(self, deploymentName, directoryToDeploy):
         self.deploymentName = deploymentName
-        self.cloudName = cloudName
         self.directoryToDeploy = directoryToDeploy
     
     def deployToNetlify(self):

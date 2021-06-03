@@ -149,21 +149,26 @@ class Api:
                     print('\033[91m' + "ERROR:" + '\033[0m' + " Unable to upload file")
                     print(r.content)
                     sys.exit(1)
-            
+        
+        # Check whether the application is deployed
         while deployment['state'] != 'ready':
             time.sleep(1)
+            # Get the deployment
             deployment = self.getExistingDeployment(deployId, deployUrl)
         
         print('\033[92m' + 'Successfully deployed at ' + deployment['deploy_ssl_url'] + '\033[0m')
     
     def uploadFileToVercel(self, directory):
+        # Get all files in the directory
         paths = self.getAllFilePathsForDirectory(directory)
+        # Get the shasum hashes for those files
         fileHashes = self.getShasum(paths, directory)
         for path in paths:
             print("Uploading " + path.replace(directory, '') + '...')
             with open(path, 'rb') as f:
                 fileName = f.name.replace(directory, '')
                 json_headers = {"Authorization": "Bearer " + self.getAccessToken(), "x-now-digest": fileHashes[fileName[1:]]}
+                # Send file to vercel API for processing
                 r = requests.post(self.vercelBaseUrl + '/v2/now/files', f.read(), headers=json_headers)
                 if r.ok:
                     print("File uploaded")

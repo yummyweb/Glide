@@ -26,15 +26,15 @@ def init(project_name):
 @click.argument('directory')
 def deploy(directory):
     """
-    Creates a basic glide config file.
+    Deploys a directory to given cloud provider.
     """
     for file in glob.glob("*.glide.json"):
         with open(file, 'rb') as f:
             deployment = Deployment(file.replace('.glide.json', ''), directory)
-            if eval(f.read())['cloud_name'] == "netlify":
+            if json.loads(f.read())['cloud_name'] == "netlify":
                 deployment.deployToNetlify()
 
-            elif eval(f.read())['cloud_name'] == "vercel": 
+            else:
                 deployment.deployToVercel()
 
 @click.command()

@@ -1,9 +1,9 @@
 import hashlib
+import sys
 import requests
 import os
 import json
 import time
-import vercel
 from src.exceptions import ConfigFileException
 
 class Api:
@@ -21,7 +21,7 @@ class Api:
         except:
             raise ConfigFileException("File not found.")
 
-        return eval(f.read())
+        return json.loads(f.read())
 
     def getClientIdAndClientSecret(self) -> tuple:
         """
@@ -45,6 +45,13 @@ class Api:
             return {"Authorization": "Bearer " + self.getAccessToken(), "content-type": "application/json"}
         else:
            return {"Authorization": "Bearer " + self.getAccessToken()} 
+
+    def getFramework(self) -> tuple:
+        """
+        Gets the framework from config file
+        """
+        config = self.getConfig()
+        return (config['framework'])
     
     def getAllFilePathsForDirectory(self, dir: str):
         """
@@ -95,14 +102,6 @@ class Api:
         print("Site created with id: " + r.json()['id'])
         return r.json()
     
-    def getDeployments(self) -> list:
-        """
-        Gets the deployments and returns the deployments as an array
-        """
-        json_headers = self.getHeaders(False)
-        r = requests.get(self.vercelBaseUrl + '/v5/now/deployments', headers=json_headers)
-        return r.json()
-    
     def deploy(self, directory) -> tuple:
         """
         Creates a deployment by sending file hashes
@@ -132,7 +131,7 @@ class Api:
         else:
             return r.json()
     
-    def uploadFile(self, directory):
+    def deployToNetlify(self, directory):
         accessToken = self.getAccessToken()
         deployment, fileHashes, deployUrl = self.deploy(directory)
         # Fetch the deployment id from deployment dict
@@ -149,6 +148,7 @@ class Api:
                 if not r.ok:
                     print('\033[91m' + "ERROR:" + '\033[0m' + " Unable to upload file")
                     print(r.content)
+                    sys.exit(1)
             
         while deployment['state'] != 'ready':
             time.sleep(1)
@@ -156,7 +156,62 @@ class Api:
         
         print('\033[92m' + 'Successfully deployed at ' + deployment['deploy_ssl_url'] + '\033[0m')
     
+    def uploadFileToVercel(self, directory):
+        paths = self.getAllFilePathsForDirectory(directory)
+        fileHashes = self.getShasum(paths, directory)
+        for path in paths:
+            print("Uploading " + path.replace(directory, '') + '...')
+            with open(path, 'rb') as f:
+                fileName = f.name.replace(directory, '')
+                json_headers = {"Authorization": "Bearer " + self.getAccessToken(), "x-now-digest": fileHashes[fileName[1:]]}
+                r = requests.post(self.vercelBaseUrl + '/v2/now/files', f.read(), headers=json_headers)
+                if r.ok:
+                    print("File uploaded")
+                else:
+                    print("ERROR: Unable to upload file")
+                    print(r.content)
+                    sys.exit(1)
+    
+    def deployToVercel(self, directory):
+        self.uploadFileToVercel(directory)
+        json_headers = self.getHeaders()
+        paths = self.getAllFilePathsForDirectory(directory)
+        files = []
+        for path in paths:
+            with open(path, 'r') as f:
+                files.append({
+                    "file": path.replace(directory, '')[1:],
+                    "data": f.read()
+                })
+
+        data = {
+            "name": self.projectName,
+            "files": files,
+            "projectSettings": {
+                "framework": self.getFramework()
+            }
+        }
+        r = requests.post(self.vercelBaseUrl + '/v12/now/deployments', json.dumps(data), headers=json_headers)
+
+        if r.ok:
+            print('\033[92m' + "Successfully deployed at " + r.json()['url'] + '\033[0m')    
+
     def getSites(self) -> list:
+        """
+        Gets the sites and returns them
+
+        Only for Netlify
+        """
         json_headers = self.getHeaders()
         r = requests.get(self.netlifyBaseUrl + '/sites', headers=json_headers)
+        return r.json()
+    
+    def getDeployments(self) -> dict:
+        """
+        Gets the deployments and returns the deployments as an array
+
+        Only for Vercel
+        """
+        json_headers = self.getHeaders(False)
+        r = requests.get(self.vercelBaseUrl + '/v5/now/deployments', headers=json_headers)
         return r.json()

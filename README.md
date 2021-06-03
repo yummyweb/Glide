@@ -30,7 +30,7 @@ Commands:
   sites   Shows all available user sites.
 ```
 
-### Why?
+## Why?
 
 Think about this, you have just created a big frontend application in react which uses Netlify serverless functions. Now you face some problem with Netlify as your cloud service provider. How would you migrate your entire frontend infrastructure? Enter Glide. With Glide you would only need to manage one configuration file and everything else will be managed by Glide.
 

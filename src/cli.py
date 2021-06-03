@@ -34,6 +34,9 @@ def deploy(directory):
             if eval(f.read())['cloud_name'] == "netlify":
                 deployment.deployToNetlify()
 
+            elif eval(f.read())['cloud_name'] == "vercel": 
+                deployment.deployToVercel()
+
 @click.command()
 def sites():
     """
@@ -43,8 +46,13 @@ def sites():
         with open(file, 'rb') as f:
             api = Api(file.replace('.glide.json', ''))
             table = []
-            for site in api.getSites():
-                table.append([site['id'], site['name'], site['url']])
+            if eval(f.read())['cloud_name'] == "netlify":
+                for site in api.getSites():
+                    table.append([site['id'], site['name'], site['url']])
+
+            else:
+                for deployment in api.getDeployments()['deployments']:
+                    table.append([deployment['uid'], deployment['name'], deployment['url']])
             
             click.echo(tabulate(table, headers=['Site ID', 'Site Name', 'Site URL'], tablefmt="psql"))
 

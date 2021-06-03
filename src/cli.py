@@ -28,9 +28,9 @@ def deploy(directory):
     """
     Creates a basic glide config file.
     """
-    for file in glob.glob("*.glide"):
+    for file in glob.glob("*.glide.json"):
         with open(file, 'rb') as f:
-            deployment = Deployment(file.replace('.glide', ''), directory)
+            deployment = Deployment(file.replace('.glide.json', ''), directory)
             if eval(f.read())['cloud_name'] == "netlify":
                 deployment.deployToNetlify()
 
@@ -39,9 +39,9 @@ def sites():
     """
     Shows all available user sites.
     """
-    for file in glob.glob("*.glide"):
+    for file in glob.glob("*.glide.json"):
         with open(file, 'rb') as f:
-            api = Api(file.replace('.glide', ''))
+            api = Api(file.replace('.glide.json', ''))
             table = []
             for site in api.getSites():
                 table.append([site['id'], site['name'], site['url']])

@@ -1,3 +1,4 @@
+![glide logo](glide-logo.png)
 # Glide
 
 ### What is it?

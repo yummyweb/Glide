@@ -24,3 +24,7 @@ Using Glide, you can see analytics for you frontend applications, moreover, you 
 ### Webhooks
 
 Glide supports hooks but only for Netlify right now. If you do migrate to Netlify, then you would be able to set and remove hooks from the cli itself.
+
+### Authors
+
+- Antariksh Verma (@yummyweb)

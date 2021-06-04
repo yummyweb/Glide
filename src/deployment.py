@@ -11,3 +11,6 @@ class Deployment:
     
     def deployToVercel(self):
         self.api.deployToVercel(self.directoryToDeploy)
+    
+    def deployToAWS(self):
+        self.api.deployToAWS(self.directoryToDeploy)

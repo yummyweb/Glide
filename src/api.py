@@ -1,9 +1,11 @@
 import hashlib
+import boto3
 import sys
 import requests
 import os
 import json
 import time
+from botocore.exceptions import ClientError
 from src.exceptions import ConfigFileException
 
 class Api:
@@ -19,9 +21,17 @@ class Api:
         try:
             f = open(self.projectName + ".glide.json", "r")
         except:
-            raise ConfigFileException("File not found.")
+            print('\033[91m' + "ERROR: Glide file does not exist. Please run init command." + '\033[0m')
+            sys.exit(1)
 
         return json.loads(f.read())
+
+    def getAWSConfig(self):
+        """
+        Reads the config file and returns AWS config
+        """
+        config = self.getConfig()
+        return (config['access_token'], config['access_secret'], config['region'])
 
     def getClientIdAndClientSecret(self) -> tuple:
         """
@@ -146,7 +156,7 @@ class Api:
                 if r.ok:
                     print("File uploaded")
                 if not r.ok:
-                    print('\033[91m' + "ERROR:" + '\033[0m' + " Unable to upload file")
+                    print('\033[91m' + "ERROR: Unable to upload file" + '\033[0m')
                     print(r.content)
                     sys.exit(1)
         
@@ -159,6 +169,11 @@ class Api:
         print('\033[92m' + 'Successfully deployed at ' + deployment['deploy_ssl_url'] + '\033[0m')
     
     def uploadFileToVercel(self, directory):
+        """
+        Uploads files to the vercel API
+
+        Only for Vercel
+        """
         # Get all files in the directory
         paths = self.getAllFilePathsForDirectory(directory)
         # Get the shasum hashes for those files
@@ -200,6 +215,84 @@ class Api:
 
         if r.ok:
             print('\033[92m' + "Successfully deployed at " + r.json()['url'] + '\033[0m')    
+
+    def awsCreateStaticSite(self) -> tuple:
+        access_token, access_secret, region = self.getAWSConfig()
+        s3 = boto3.resource('s3', 
+        aws_access_key_id=access_token,
+        aws_secret_access_key=access_secret)
+        s3Client = boto3.client('s3', aws_access_key_id=access_token,
+        aws_secret_access_key=access_secret)
+        print("Creating bucket..")
+        try:
+            s3.create_bucket(
+                Bucket=self.projectName,
+                CreateBucketConfiguration={
+                    'LocationConstraint': region
+                }
+            )
+        except ClientError as err:
+            print('\033[91m' + "ERROR: Bucket already exists!" + '\033[0m')
+            sys.exit(1)
+
+        s3Client.put_bucket_website(
+            Bucket="mywebsiteisamazing",
+            WebsiteConfiguration={
+            'ErrorDocument': {'Key': 'error.html'},
+            'IndexDocument': {'Suffix': 'index.html'},
+            }
+        )
+        print("Created bucket")
+
+        bucket_policy = {
+            'Version': '2012-10-17',
+            'Statement': [{
+                'Sid': 'Allow All',
+                'Effect': 'Allow',
+                'Principal': '*',
+                "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:PutObjectAcl"
+                ],
+                'Resource': "arn:aws:s3:::%s/*" % self.projectName
+            }]
+        }
+        bucket_policy = json.dumps(bucket_policy)
+
+        s3Client.put_bucket_policy(Bucket=self.projectName, Policy=bucket_policy)
+        return (region)
+    
+    def deployToAWS(self, directory):
+        region = self.awsCreateStaticSite()
+        s3 = boto3.client('s3')
+        s3.put_bucket_website(
+            Bucket=self.projectName,
+            WebsiteConfiguration={
+            'ErrorDocument': {'Key': 'error.html'},
+            'IndexDocument': {'Suffix': 'index.html'},
+            }
+        )
+        
+        if not os.path.exists(directory):
+            print('\033[91m' + "ERROR: Target directory does not exist" + '\033[0m')
+            print('\033[91m' + "ERROR: Deleting bucket" + '\033[0m')
+            # Delete all objects in bucket
+            boto3.resource('s3').Bucket(name=self.projectName).objects.all().delete()
+            # Delete empty bucket
+            s3.delete_bucket(Bucket=self.projectName)
+            print('\033[91m' + "ERROR: Deleted bucket" + '\033[0m')
+            sys.exit(1)
+
+        paths = self.getAllFilePathsForDirectory(directory)
+
+        for path in paths:
+            s3.put_object(  Body=open(path).read(),
+                            Bucket=self.projectName,
+                            Key=path.replace(directory, '')[1:],
+                            ContentType='text/html')
+        
+        print('\033[92m' + f"Successfully deployed at  http://{self.projectName}.s3-website.{region}.amazonaws.com" + '\033[0m')
 
     def getSites(self) -> list:
         """

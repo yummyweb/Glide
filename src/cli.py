@@ -1,6 +1,7 @@
 import click
 import glob
 import json
+import sys
 from tabulate import tabulate
 from src.api import Api
 from src.deployment import Deployment
@@ -14,8 +15,7 @@ def init(project_name):
     template = {
         "project_name": project_name,
         "cloud_name": "",
-        "client_id": "",
-        "client_secret": "",
+        "access_secret": "",
         "access_token": ""
     }
 
@@ -29,13 +29,22 @@ def deploy(directory):
     Deploys a directory to given cloud provider.
     """
     for file in glob.glob("*.glide.json"):
-        with open(file, 'rb') as f:
-            deployment = Deployment(file.replace('.glide.json', ''), directory)
-            if json.loads(f.read())['cloud_name'] == "netlify":
+        with open(file, 'r') as f:
+            glideJson = json.loads(f.read())
+
+            if glideJson['project_name'] != f.name.replace('.glide.json', ''):
+                print('\033[91m' + "ERROR: Glide file does not exist. Please run init command." + '\033[0m')
+                sys.exit(1)
+
+            deployment = Deployment(glideJson['project_name'], directory)
+            if glideJson['cloud_name'] == "netlify":
                 deployment.deployToNetlify()
 
-            else:
+            elif glideJson['cloud_name'] == "vercel":
                 deployment.deployToVercel()
+            
+            else:
+                deployment.deployToAWS()
 
 @click.command()
 def sites():

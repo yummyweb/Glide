@@ -42,6 +42,10 @@ Using Glide, you can see analytics for you frontend applications, moreover, you 
 
 Glide supports hooks but only for Netlify right now. If you do migrate to Netlify, then you would be able to set and remove hooks from the cli itself.
 
+## Versioning
+
+Glide also versions your deployments if the versioning field is set to true in the glide file. Glide versions all deployments made by you or your team throughout all cloud providers. 
+
 ## Authors
 
 - Antariksh Verma (@yummyweb)

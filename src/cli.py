@@ -28,9 +28,9 @@ def deploy(directory):
     """
     Deploys a directory to given cloud provider.
     """
-    if glob.glob("*.glide.json") == []:
-        print('\033[91m' + "ERROR: Glide file does not exist. Please run init command." + '\033[0m')
-        sys.exit(1)
+    if not glob.glob("*.glide.json"):
+        click.echo('\033[91m' + "ERROR: Glide file not found. Please run init command." + '\033[0m')
+        sys.exit(1) 
 
     for file in glob.glob("*.glide.json"):
         with open(file, 'r') as f:

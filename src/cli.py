@@ -65,9 +65,11 @@ def sites():
 
     for file in glob.glob("*.glide.json"):
         with open(file, 'rb') as f:
+            glideJson = json.loads(f.read())
+
             api = Api(file.replace('.glide.json', ''))
             table = []
-            if eval(f.read())['cloud_name'] == "netlify":
+            if glideJson['cloud_name'] == "netlify":
                 for site in api.getSites():
                     table.append([site['id'], site['name'], site['url']])
 

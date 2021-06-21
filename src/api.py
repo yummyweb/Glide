@@ -6,7 +6,6 @@ import os
 import json
 import time
 from botocore.exceptions import ClientError
-from src.exceptions import ConfigFileException
 
 class Api:
     def __init__(self, projectName):

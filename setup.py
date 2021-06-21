@@ -6,6 +6,7 @@ setup(
     py_modules=['src.cli'],
     install_requires=[
         'Click',
+        'tabulate'
     ],
     entry_points='''
         [console_scripts]

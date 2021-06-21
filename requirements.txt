@@ -1,21 +1,13 @@
-attrs @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/6f/a9/ee/569c37f69a8c365ee41d2340aeac0214ee8c0086b8d8db43a21545204b/attrs-21.2.0-py2.py3-none-any.whl
 boto3==1.17.86
 botocore==1.20.86
 build==0.4.0
 certifi==2021.5.30
 chardet==4.0.0
 click==8.0.1
--e git+https://github.com/yummyweb/Glide.git@9938230c3630199e80c76467f6f70bc2af5df201#egg=glide
 idna==2.10
 jmespath==0.10.0
 jsontemplates==0.1.0
-more-itertools @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/47/d4/7d/526affa62eb0c76eec19004cbbf18cc4e55f51c665e92b88bb2ed25752/more_itertools-8.8.0-py3-none-any.whl
-packaging @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/c2/76/aa/699ed723689e741411dfbdbc9b8c392079d54fb1e1a1b814df7be7cf47/packaging-20.9-py2.py3-none-any.whl
 pep517==0.10.0
-pluggy @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/29/58/fc/ed8b7451d3ef91a6465024f5656141da996e7aafd4d41a1659629a75e7/pluggy-0.13.1-py2.py3-none-any.whl
-py @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/60/79/0b/c48bd9c2a989aa8b1eb7a67cd02b053c10734f2e4e5665f7995f09999c/py-1.10.0-py2.py3-none-any.whl
-pyparsing @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/92/0f/cf/effdcd5d76a6186df0969f85b3b030284ff8058936d5016540b5258ea3/pyparsing-2.4.7-py2.py3-none-any.whl
-pytest @ file:///Users/nishant/Library/Caches/pypoetry/artifacts/e4/88/dd/3dbff42e3c4462dc3d027f5024025571166cb35edee215ce93852a968c/pytest-5.4.3-py3-none-any.whl
 python-dateutil==2.8.1
 requests==2.25.1
 s3transfer==0.4.2

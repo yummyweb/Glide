@@ -28,12 +28,16 @@ def deploy(directory):
     """
     Deploys a directory to given cloud provider.
     """
+    if glob.glob("*.glide.json") == []:
+        print('\033[91m' + "ERROR: Glide file does not exist. Please run init command." + '\033[0m')
+        sys.exit(1)
+
     for file in glob.glob("*.glide.json"):
         with open(file, 'r') as f:
             glideJson = json.loads(f.read())
 
             if glideJson['project_name'] != f.name.replace('.glide.json', ''):
-                print('\033[91m' + "ERROR: Glide file does not exist. Please run init command." + '\033[0m')
+                print('\033[91m' + "ERROR: Project name does not match glide file name." + '\033[0m')
                 sys.exit(1)
 
             deployment = Deployment(glideJson['project_name'], directory)
@@ -43,9 +47,13 @@ def deploy(directory):
             elif glideJson['cloud_name'] == "vercel":
                 deployment.deployToVercel()
             
-            else:
+            elif glideJson['cloud_name'] == "aws":
                 deployment.deployToAWS()
-
+            
+            else:
+                print('\033[91m' + "ERROR: Cloud name not specified in Glide file. Please add a value to 'cloud_name'." + '\033[0m') 
+                sys.exit(1)
+    
 @click.command()
 def sites():
     """

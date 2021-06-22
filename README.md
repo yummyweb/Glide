@@ -30,6 +30,12 @@ Commands:
   sites   Shows all available user sites.
 ```
 
+## Install
+
+For now in order to install Glide on your system, you need to build it from source. Thankfully that is super easy. All you need is Python and prefferably, a virtualenv.
+
+Clone the repo on your system and run `python3 -m pip install --editable .` in order to install the Glide CLI locally.
+
 ## Why?
 
 Think about this, you have just created a big frontend application in react which uses Netlify serverless functions. Now you face some problem with Netlify as your cloud service provider. How would you migrate your entire frontend infrastructure? Enter Glide. With Glide you would only need to manage one configuration file and everything else will be managed by Glide.

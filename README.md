@@ -27,9 +27,10 @@ Options:
   --help     Show this message and exit.
 
 Commands:
-  deploy  Deploys a directory to given cloud provider.
-  init    Creates a basic glide config file.
-  sites   Shows all available user sites.
+  deploy   Deploys a directory to given cloud provider.
+  init     Creates a basic glide config file.
+  migrate  Migrates current configuration to the given cloud provider.
+  sites    Shows all available user sites.
 ```
 
 ## Install

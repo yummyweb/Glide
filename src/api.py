@@ -117,13 +117,16 @@ class Api:
         """
         json_headers = self.getHeaders()
         paths = self.getAllFilePathsForDirectory(directory)
+        # Get the shasum for all files in given directory
         fileHashes = self.getShasum(paths, directory)
+        # Create a site on netlify
         site = self.createSite()
         data = {
             "files": fileHashes
         }
         deployUrl = self.netlifyBaseUrl + '/sites/' + site['id'] + '/deploys/'
         data_json = json.dumps(data)
+        # Deploy the site to netlify
         r = requests.post(deployUrl, data=data_json, headers=json_headers)
         print("Deploying to Netlify...")
         return (r.json(), fileHashes, deployUrl)
@@ -134,7 +137,7 @@ class Api:
         r = requests.get(url=getDeployUrl, headers=json_headers)
         if not r.ok:
             err('ERROR: Unable to fetch existing deployment')
-            print(r.content)
+            sys.exit(1)
         else:
             return r.json()
     

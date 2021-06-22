@@ -232,7 +232,7 @@ class Api:
             sys.exit(1)
 
         s3Client.put_bucket_website(
-            Bucket="mywebsiteisamazing",
+            Bucket=self.projectName,
             WebsiteConfiguration={
             'ErrorDocument': {'Key': 'error.html'},
             'IndexDocument': {'Suffix': 'index.html'},

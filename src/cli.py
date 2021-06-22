@@ -39,8 +39,7 @@ def deploy(directory):
             glideJson = json.loads(f.read())
 
             if glideJson['project_name'] != f.name.replace('.glide.json', ''):
-                print('\033[91m' + "ERROR: Project name does not match glide file name." + '\033[0m')
-                sys.exit(1)
+                err("ERROR: Project name does not match glide file name.")
 
             deployment = Deployment(glideJson['project_name'], directory)
             if glideJson['cloud_name'] == "netlify":

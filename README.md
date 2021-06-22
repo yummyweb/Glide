@@ -46,6 +46,12 @@ Glide supports hooks but only for Netlify right now. If you do migrate to Netlif
 
 Glide also versions your deployments if the versioning field is set to true in the glide file. Glide versions all deployments made by you or your team throughout all cloud providers. 
 
+## Notes
+
+For AWS the region and access secret is neccessary.
+
+Serverless is not yet supported.
+
 ## Authors
 
 - Antariksh Verma (@yummyweb)

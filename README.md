@@ -11,6 +11,8 @@ Glide can seamlessly integrate with the following cloud services:
 - Digital Ocean
 - Azure
 
+Since Glide is in beta, it does not yet support all of the above cloud services.
+
 Glide enables you to migrate your applications from one cloud service to another with just one cli command.
 
 ## Usage

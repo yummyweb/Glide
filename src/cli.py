@@ -5,6 +5,8 @@ import sys
 from tabulate import tabulate
 from src.api import Api
 from src.deployment import Deployment
+from src.utils import err
+from src.constants import CLOUD_PROVIDERS
 
 @click.command()
 @click.argument('project_name')
@@ -19,8 +21,8 @@ def init(project_name):
         "access_token": ""
     }
 
-    with open(project_name + '.glide.json', 'w') as fp:
-        fp.write(json.dumps(template, indent=4))
+    with open(project_name + '.glide.json', 'w') as f:
+        f.write(json.dumps(template, indent=4))
 
 @click.command()
 @click.argument('directory')
@@ -51,17 +53,53 @@ def deploy(directory):
                 deployment.deployToAWS()
             
             else:
-                print('\033[91m' + "ERROR: Cloud name not specified in Glide file. Please add a value to 'cloud_name'." + '\033[0m') 
-                sys.exit(1)
-    
+                err("ERROR: Cloud name not specified in Glide file. Please add a value to 'cloud_name'.")
+
+@click.command()
+@click.argument('cloud')
+def migrate(cloud):
+    """
+    Migrates current configuration to the given cloud provider.
+    """
+    if not glob.glob("*.glide.json"):
+        err("ERROR: Glide file not found. Please run init command.")
+
+    for file in glob.glob("*.glide.json"):
+        # Read the glide file and close it
+        with open(file, 'r+') as f:
+            glideJson = json.loads(f.read())
+            f.close()
+
+        # Empty the contents of the file
+        with open(file, 'r+') as f:
+            f.close()
+
+        with open(file, 'r+') as f:
+            if glideJson['project_name'] != f.name.replace('.glide.json', ''):
+                err("ERROR: Project name does not match glide file name.")
+            
+            if cloud not in CLOUD_PROVIDERS:
+                err("ERROR: Given cloud provider is not recognised. Please provide a known cloud provider.")
+
+            glideJson['cloud_name'] = cloud
+
+            if cloud == "aws":
+                if "region" not in glideJson:
+                    glideJson['region'] = "us-east-1"
+                
+                if "access_secret" not in glideJson:
+                    glideJson['access_secret'] = "<your_access_secret>"
+
+            f.write(json.dumps(glideJson, indent=4))
+            f.close()
+
 @click.command()
 def sites():
     """
     Shows all available user sites.
     """
     if not glob.glob("*.glide.json"):
-        click.echo('\033[91m' + "ERROR: Glide file not found. Please run init command." + '\033[0m')
-        sys.exit(1)
+        err("ERROR: Glide file not found. Please run init command.")
 
     for file in glob.glob("*.glide.json"):
         with open(file, 'rb') as f:
@@ -86,6 +124,7 @@ def cli():
 
 cli.add_command(init)
 cli.add_command(deploy)
+cli.add_command(migrate)
 cli.add_command(sites)
 
 

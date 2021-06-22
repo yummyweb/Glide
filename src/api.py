@@ -6,6 +6,7 @@ import os
 import json
 import time
 from botocore.exceptions import ClientError
+from src.utils import err
 
 class Api:
     def __init__(self, projectName):
@@ -20,7 +21,7 @@ class Api:
         try:
             f = open(self.projectName + ".glide.json", "r")
         except:
-            print('\033[91m' + "ERROR: Glide file does not exist. Please run init command." + '\033[0m')
+            err("ERROR: Glide file does not exist. Please run init command.")
             sys.exit(1)
 
         return json.loads(f.read())
@@ -32,19 +33,16 @@ class Api:
         config = self.getConfig()
         return (config['access_token'], config['access_secret'], config['region'])
 
-    def getClientIdAndClientSecret(self) -> tuple:
-        """
-        Gets the config file and returns the client id and secret
-        """
-        config = self.getConfig()
-        return (config['client_id'], config['client_secret'])
-    
     def getAccessToken(self) -> tuple:
         """
         Gets the config file and returns the access token
         """
         config = self.getConfig()
-        return (config['access_token'])
+        if config['access_token']:
+            return (config['access_token'])
+        else:
+            err("Access token not specified. Please provide the access token from your cloud provider.")
+            sys.exit(1)
     
     def getHeaders(self, withContentType=True) -> dict:
         """
@@ -135,7 +133,7 @@ class Api:
         getDeployUrl = url + deploymentId + '/'
         r = requests.get(url=getDeployUrl, headers=json_headers)
         if not r.ok:
-            print('ERROR: Unable to fetch existing deployment')
+            err('ERROR: Unable to fetch existing deployment')
             print(r.content)
         else:
             return r.json()
@@ -155,7 +153,7 @@ class Api:
                 if r.ok:
                     print("File uploaded")
                 if not r.ok:
-                    print('\033[91m' + "ERROR: Unable to upload file" + '\033[0m')
+                    err("ERROR: Unable to upload file")
                     print(r.content)
                     sys.exit(1)
         
@@ -187,8 +185,7 @@ class Api:
                 if r.ok:
                     print("File uploaded")
                 else:
-                    print("ERROR: Unable to upload file")
-                    print(r.content)
+                    err("ERROR: Unable to upload file")
                     sys.exit(1)
     
     def deployToVercel(self, directory):
@@ -222,7 +219,7 @@ class Api:
         aws_secret_access_key=access_secret)
         s3Client = boto3.client('s3', aws_access_key_id=access_token,
         aws_secret_access_key=access_secret)
-        print("Creating bucket..")
+        print("Creating bucket...")
         try:
             s3.create_bucket(
                 Bucket=self.projectName,
@@ -231,7 +228,7 @@ class Api:
                 }
             )
         except ClientError as err:
-            print('\033[91m' + "ERROR: Bucket already exists!" + '\033[0m')
+            err("ERROR: Bucket already exists!")
             sys.exit(1)
 
         s3Client.put_bucket_website(
@@ -274,19 +271,19 @@ class Api:
         )
         
         if not os.path.exists(directory):
-            print('\033[91m' + "ERROR: Target directory does not exist" + '\033[0m')
-            print('\033[91m' + "ERROR: Deleting bucket" + '\033[0m')
+            err("ERROR: Target directory does not exist")
+            err("ERROR: Deleting bucket")
             # Delete all objects in bucket
             boto3.resource('s3').Bucket(name=self.projectName).objects.all().delete()
             # Delete empty bucket
             s3.delete_bucket(Bucket=self.projectName)
-            print('\033[91m' + "ERROR: Deleted bucket" + '\033[0m')
+            err("ERROR: Deleted bucket")
             sys.exit(1)
 
         paths = self.getAllFilePathsForDirectory(directory)
 
         for path in paths:
-            s3.put_object(  Body=open(path).read(),
+            s3.put_object(Body=open(path).read(),
                             Bucket=self.projectName,
                             Key=path.replace(directory, '')[1:],
                             ContentType='text/html')

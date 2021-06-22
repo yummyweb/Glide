@@ -22,7 +22,7 @@ class Api:
             f = open(self.projectName + ".glide.json", "r")
         except:
             err("ERROR: Glide file does not exist. Please run init command.")
-            sys.exit(1)
+            
 
         return json.loads(f.read())
 
@@ -42,7 +42,7 @@ class Api:
             return (config['access_token'])
         else:
             err("Access token not specified. Please provide the access token from your cloud provider.")
-            sys.exit(1)
+            
     
     def getHeaders(self, withContentType=True) -> dict:
         """
@@ -137,7 +137,7 @@ class Api:
         r = requests.get(url=getDeployUrl, headers=json_headers)
         if not r.ok:
             err('ERROR: Unable to fetch existing deployment')
-            sys.exit(1)
+            
         else:
             return r.json()
     
@@ -158,11 +158,11 @@ class Api:
                 if not r.ok:
                     err("ERROR: Unable to upload file")
                     print(r.content)
-                    sys.exit(1)
+                    
         
         # Check whether the application is deployed
         while deployment['state'] != 'ready':
-            time.sleep(1)
+            time.sleep
             # Get the deployment
             deployment = self.getExistingDeployment(deployId, deployUrl)
         
@@ -189,7 +189,7 @@ class Api:
                     print("File uploaded")
                 else:
                     err("ERROR: Unable to upload file")
-                    sys.exit(1)
+                    
     
     def deployToVercel(self, directory):
         self.uploadFileToVercel(directory)
@@ -232,7 +232,7 @@ class Api:
             )
         except ClientError as err:
             err("ERROR: Bucket already exists!")
-            sys.exit(1)
+            
 
         s3Client.put_bucket_website(
             Bucket=self.projectName,
@@ -281,7 +281,7 @@ class Api:
             # Delete empty bucket
             s3.delete_bucket(Bucket=self.projectName)
             err("ERROR: Deleted bucket")
-            sys.exit(1)
+            
 
         paths = self.getAllFilePathsForDirectory(directory)
 

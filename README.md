@@ -68,3 +68,7 @@ Serverless is not yet supported.
 ## Authors
 
 - Antariksh Verma (@yummyweb)
+
+## License
+
+[MIT](LICENSE)

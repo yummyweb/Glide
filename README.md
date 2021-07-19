@@ -44,9 +44,15 @@ Clone the repo on your system and run `python3 -m pip install --editable .` in o
 
 Think about this, you have just created a big frontend application in react which uses Netlify serverless functions. Now you face some problem with Netlify as your cloud service provider. How would you migrate your entire frontend infrastructure? Enter Glide. With Glide you would only need to manage one configuration file and everything else will be managed by Glide.
 
+## Serverless
+
+With Glide, you get out of the box support for serverless functions in Python. Writing functions with Glde is very easy and Glide removes many abstractions from your serverless functions, however it provides many helpful utilities in serialising data, logging info, setting headers etc.
+
+Examples of Glide serverless functions can be found in the `serverless/' directory.
+
 ## Analytics
 
-Using Glide, you can see analytics for you frontend applications, moreover, you will be able to access user/team analytics as well.
+Using Glide, you can see analytics for your frontend applications, moreover, you will be able to access user/team analytics as well.
 
 ## Webhooks
 
@@ -64,7 +70,9 @@ If you are interested in reporting/fixing issues and contributing directly to th
 
 For AWS the region and access secret is neccessary.
 
-Serverless is not yet supported.
+Serverless integration for Netlify and Vercel yet to come.
+
+The serverless function you write has to be in a `serve.py` file.
 
 ## Authors
 

@@ -12,7 +12,7 @@ def loadModule(module_name):
 
 class S(BaseHTTPRequestHandler):
     def __init__(self, request: bytes, client_address: Tuple[str, int], server: socketserver.BaseServer) -> None:
-        module = loadModule("src/serve")
+        module = loadModule("serve")
         httpObj = module.http()
 
         self.getHandler = httpObj.getHandler

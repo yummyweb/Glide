@@ -28,6 +28,7 @@ Options:
 
 Commands:
   deploy   Deploys a directory to given cloud provider.
+  dev      Run dev serverless server
   init     Creates a basic glide config file.
   migrate  Migrates current configuration to the given cloud provider.
   sites    Shows all available user sites.

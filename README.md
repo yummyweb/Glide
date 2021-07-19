@@ -48,7 +48,7 @@ Think about this, you have just created a big frontend application in react whic
 
 With Glide, you get out of the box support for serverless functions in Python. Writing functions with Glde is very easy and Glide removes many abstractions from your serverless functions, however it provides many helpful utilities in serialising data, logging info, setting headers etc.
 
-Examples of Glide serverless functions can be found in the `serverless/' directory.
+Examples of Glide serverless functions can be found in the `serverless/` directory.
 
 ## Analytics
 

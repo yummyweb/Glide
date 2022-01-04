@@ -36,6 +36,10 @@ Commands:
 
 ## Install
 
+### Stable
+To install the stable release from pypi, run `pip install glide-cli` and it will automatically install Glide on your system.
+
+### Development
 For now in order to install Glide on your system, you need to build it from source. Thankfully that is super easy. All you need is Python and prefferably, a virtualenv.
 
 Clone the repo on your system and run `python3 -m pip install --editable .` in order to install the Glide CLI locally.

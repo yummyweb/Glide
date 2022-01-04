@@ -3,7 +3,6 @@ import glob
 import json
 import sys
 from tabulate import tabulate
-from src.serverless import run
 from src.api import Api
 from src.deployment import Deployment
 from src.utils import err
@@ -118,14 +117,6 @@ def sites():
             
             click.echo(tabulate(table, headers=['Site ID', 'Site Name', 'Site URL'], tablefmt="psql"))
 
-@click.command()
-@click.option("-p", "--port", default=8080)
-def dev(port):
-    """
-    Run dev serverless server
-    """
-    run(port=port)
-
 @click.group()
 @click.version_option()
 def cli():
@@ -135,8 +126,4 @@ cli.add_command(init)
 cli.add_command(deploy)
 cli.add_command(migrate)
 cli.add_command(sites)
-cli.add_command(dev)
 
-
-if __name__ =="__main__":
-    cli()

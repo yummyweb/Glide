@@ -1,13 +1,13 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name="glide",
-    version='0.1',
-    py_modules=['src.cli'],
+        name="glide-cli",
+    version='0.0.8',
     install_requires=[
         'Click',
         'tabulate'
     ],
+    packages=["src"],
     entry_points='''
         [console_scripts]
         glide=src.cli:cli
